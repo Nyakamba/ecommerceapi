@@ -1,5 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const userRoute = express.Router();
 const User = require("../../models/user/User");
 
@@ -43,7 +44,8 @@ userRoute.post("/login", async (req, res) => {
     if (!isPasswordValid) {
       return res.json("Invalid login credentials");
     }
-    res.status(200).json(userFound);
+
+    const accessToken = res.status(200).json(userFound);
   } catch (error) {
     res.status(500).json(error.message);
   }
