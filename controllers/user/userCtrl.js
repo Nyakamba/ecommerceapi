@@ -42,12 +42,23 @@ const loginCtrl = async (req, res) => {
       return res.json("Invalid login credentials");
     }
 
-    const accessToken = jwt.sign({
-      id: userFound._id,
-      isAdmin: userFound.isAdmin,
-    });
+    const accessToken = (id, isAdmin) => {
+      return jwt.sign(
+        {
+          id,
+          isAdmin,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "3d" }
+      );
+    };
 
-    res.status(200).json(userFound);
+    res.status(200).json({
+      username: userFound.username,
+      email: userFound.email,
+      isAdmin: userFound.isAdmin,
+      token: accessToken(userFound._id, userFound.isAdmin),
+    });
   } catch (error) {
     res.status(500).json(error.message);
   }
