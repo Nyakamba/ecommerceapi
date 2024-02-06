@@ -1,13 +1,21 @@
 const express = require("express");
 const userRoute = express.Router();
+const User = require("../../models/user/User");
 
-userRoute.get("/", (req, res) => {
-  res.send("users test route is successful");
-});
+//register
+userRoute.post("/register", async (req, res) => {
+  const { username, email, password } = req.body;
 
-userRoute.post("/register", (req, res) => {
-  const username = req.body.username;
-  res.json({ username });
+  try {
+    const user = await User.create({
+      username,
+      email,
+      password,
+    });
+    res.json({ data: user });
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
 });
 
 module.exports = userRoute;
